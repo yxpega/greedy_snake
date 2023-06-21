@@ -13,7 +13,8 @@
 #define INPUTKEY_RIGHT 357
 #define INPUTKEY_ESC 27
 #define INPUTKEY_SPACE 32
-#define INPUTKEY_M 109
+#define INPUTKEY_ONE 49
+#define INPUTKEY_TWO 50
 
 int getch(void)
 {
@@ -57,13 +58,43 @@ static void game_instruction(void)
         printf("1. Use UP, DOWN, LEFT, RIGHT key to move snake.\n");
         printf("2. \"+\" is food that can make your snake grow up.\n");
         printf("3. \"#\" is wall that can destroy your snake.\n");
-        printf("4. Use \"m\" key to change mode of your snake.\n");
+        printf("4. From level 2, you can change your snake mode at the beginning of each level.\n");
         printf("5. In offensive mode, you can use \"space\" key to destroy wall.\n");
         printf("   But be careful of your snake body, don't hit it!\n");
         printf("6. If you want to quit the game, press ESC key.\n");
         printf("======================================================================\n");
         printf("\nPress any key to conitnue...\n");
         getch();
+}
+
+static void goto_next_level(Background *bg, Snake_part *snake)
+{
+        levelup_bg(bg);
+        snake_putto_background(bg, snake);
+        generate_bg(bg);
+        snake_load_bullets(bg, snake);
+
+        system("clear");
+        print_bg(bg);
+        printf("At the beginning of level %u, you can choose the following mode:\n",
+               bg->level);
+        printf("penetrable_mode: press 1...\n");
+        printf("offensive_mode: press 2...\n");
+
+        int key = getch();
+        switch(key) {
+                case INPUTKEY_ONE:
+                        snake_set_mode(snake, penetrable_mode);
+                        printf("set penetrable_mode success...\n");
+                        break;
+                case INPUTKEY_TWO:
+                        snake_set_mode(snake, offensive_mode);
+                        printf("Set offensive_mode success...\n");
+                        break;
+                default:
+                        printf("key error: continue to use the last mode...\n");
+                        break;
+        }
 }
 
 int main(void)
@@ -102,9 +133,6 @@ int main(void)
                         case INPUTKEY_SPACE:
                                 snake_shoot_bullets(&bg, snake);
                                 break;
-                        case INPUTKEY_M:
-                                snake_exchange_mode(snake);
-                                break;
                         default:
                                 break;
                 }
@@ -141,15 +169,9 @@ int main(void)
                                 printf("Congratulations! Level up to %u!\n",
                                        bg.level + 1);
                                 printf("Press any key to continue...\n");
-
-                                levelup_bg(&bg);
-                                snake_putto_background(&bg, snake);
-                                generate_bg(&bg);
-                                snake_load_bullets(&bg, snake);
                                 getch();
-                                system("clear");
-                                print_bg(&bg);
-                        }
+                                goto_next_level(&bg, snake);
+                       }
                 }
         }
 

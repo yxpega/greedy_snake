@@ -49,10 +49,12 @@ void snake_shoot_bullets(Background *bg, Snake_part *snake)
         }
 }
 
-void snake_exchange_mode(Snake_part *snake)
+void snake_set_mode(Snake_part *snake, enum snake_mode mode)
 {
         assert(snake != NULL);
-        snake->mode = 1u - snake->mode;
+        if (mode <= invalid_mode) {
+                snake->mode = mode;
+        }
 }
 
 Snake_part *snake_init(Background *bg)

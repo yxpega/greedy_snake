@@ -16,6 +16,7 @@ enum snake_mode {
         /* snake will die if hits its body,
          * but it can shoot bullets to destroy the background wall */
         offensive_mode = 1u,
+        invalid_mode = 2u,
 };
 
 typedef struct part_s {
@@ -29,7 +30,7 @@ typedef struct part_s {
 
 void snake_load_bullets(Background *bg, Snake_part *snake);
 void snake_shoot_bullets(Background *bg, Snake_part *snake);
-void snake_exchange_mode(Snake_part *snake);
+void snake_set_mode(Snake_part *snake, enum snake_mode mode);
 Snake_part *snake_init(Background *bg);
 void snake_putto_background(Background *bg, Snake_part *snake);
 bool snake_move_onbg_ok(Background *bg, Snake_part *snake_head, unsigned int direc_type);
