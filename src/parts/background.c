@@ -4,9 +4,9 @@
 #include <string.h>
 #include "background.h"
 
-static void set_bg(Background *bg, int num, enum bg_type type)
+static void set_bg(Background *bg, unsigned int num, enum bg_type type)
 {
-        for (int i = 0; i < num; i++) {
+        for (unsigned int i = 0u; i < num; i++) {
                 Point tmp_p;
                 do {
                         tmp_p.x = rand() % BG_BOUNDER;
@@ -16,10 +16,22 @@ static void set_bg(Background *bg, int num, enum bg_type type)
         }
 }
 
+void levelup_bg(Background *bg)
+{
+        bg->level++;
+        bg->food_num = 0u;
+        bg->wall_num = 0u;
+        memset(bg->bg_path, 0, sizeof(bg->bg_path));
+}
+
 void generate_bg(Background *bg)
 {
-        bg->wall_num = rand() % (BG_BOUNDER * BG_BOUNDER / 10);
-        bg->food_num = rand() % (BG_BOUNDER * BG_BOUNDER / 10);
+        if (bg->level == 0u) {
+                bg->level++;
+        }
+
+        bg->wall_num = (bg->level - 1) * 2;
+        bg->food_num = bg->level;
 
         set_bg(bg, bg->wall_num, bg_wall);
         set_bg(bg, bg->food_num, bg_food);
@@ -60,6 +72,7 @@ void print_bg(Background *bg)
                 printf("#");
         }
         printf("\n");
+        printf("level: %u\n", bg->level);
 }
 
 bool is_point_valid(Background *bg, Point p)

@@ -50,12 +50,11 @@ int getch(void)
 
 int main(void)
 {
-        Background bg;
-        memset(&bg, 0, sizeof(Background));
-        generate_bg(&bg);
+        Background bg = {0};
 
         Snake_part *snake = snake_init(&bg);
         snake_putto_background(&bg, snake);
+        generate_bg(&bg);
 
         int input_key = 0;
         bool move_ok = true;
@@ -86,7 +85,8 @@ int main(void)
                 }
 
                 if (!move_ok) {
-                        printf("Ooops! You failed... T~T\n");
+                        printf("Ooops! You failed level %d... T~T\n",
+                               bg.level);
                         break;
                 }
 
@@ -95,8 +95,23 @@ int main(void)
 
                 if (bg.food_num == 0) {
                         printf("Wow! Snake is full now... ^_<\n");
-                        printf("You win!\n");
-                        break;
+                        if (bg.level == BG_MAX_LEVEL) {
+                                printf("You win! You have finally achieved level %u!\n",
+                                       bg.level);
+                                printf("You are an excellent snake feeder! O(n_n)O\n");
+                                break;
+                        } else {
+                                printf("Congratulations! Level up to %u!\n",
+                                       bg.level + 1);
+                                printf("Press any key to continue...\n");
+
+                                levelup_bg(&bg);
+                                snake_putto_background(&bg, snake);
+                                generate_bg(&bg);
+                                getch();
+                                system("clear");
+                                print_bg(&bg);
+                        }
                 }
         }
 

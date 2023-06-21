@@ -16,10 +16,8 @@ Snake_part *snake_init(Background *bg)
         snake_head->prev = snake_head;
         snake_head->next = snake_head;
 
-        do {
-                init_loc.x = rand() % BG_BOUNDER;
-                init_loc.y = rand() % BG_BOUNDER;
-        } while (!is_point_valid(bg, init_loc));
+        init_loc.x = rand() % BG_BOUNDER;
+        init_loc.y = rand() % BG_BOUNDER;
         snake_head->location = init_loc;
 
         return snake_head;

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define BG_BOUNDER 20
+#define BG_MAX_LEVEL BG_BOUNDER
 
 enum bg_type {
         bg_empty = 0,   // use " " to denote empty
@@ -20,12 +21,14 @@ typedef struct point_s {
 } Point;
 
 typedef struct bg_s {
-        int wall_num;
-        int food_num;
+        unsigned int wall_num;
+        unsigned int food_num;
+        unsigned int level;
         enum bg_type bg_path[BG_BOUNDER][BG_BOUNDER];
 } Background;
 
 void generate_bg(Background *bg);
+void levelup_bg(Background *bg);
 void print_bg(Background *bg);
 bool is_point_valid(Background *bg, Point p);
 bool is_point_food(Background *bg, Point p);
