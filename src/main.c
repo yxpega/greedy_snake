@@ -50,8 +50,26 @@ int getch(void)
         return key_val;
 }
 
+static void game_instruction(void)
+{
+        printf("======================================================================\n");
+        printf("Welcome to the world of greedy snake!\n\n");
+        printf("1. Use UP, DOWN, LEFT, RIGHT key to move snake.\n");
+        printf("2. \"+\" is food that can make your snake grow up.\n");
+        printf("3. \"#\" is wall that can destroy your snake.\n");
+        printf("4. Use \"m\" key to change mode of your snake.\n");
+        printf("5. In offensive mode, you can use \"space\" key to destroy wall.\n");
+        printf("   But be careful of your snake body, don't hit it!\n");
+        printf("6. If you want to quit the game, press ESC key.\n");
+        printf("======================================================================\n");
+        printf("\nPress any key to conitnue...\n");
+        getch();
+}
+
 int main(void)
 {
+        game_instruction();
+
         Background bg = {0};
 
         Snake_part *snake = snake_init(&bg);
@@ -63,7 +81,7 @@ int main(void)
         bool running = true;
         system("clear");
         print_bg(&bg);
-        while (running) {
+        while (true) {
                 input_key = getch();
                 switch ((int)input_key) {
                         case INPUTKEY_UP:
@@ -80,7 +98,6 @@ int main(void)
                                 break;
                         case INPUTKEY_ESC:
                                 running = false;
-                                printf("Goodbye Little Snake~...\n");
                                 break;
                         case INPUTKEY_SPACE:
                                 snake_shoot_bullets(&bg, snake);
@@ -95,6 +112,11 @@ int main(void)
                 system("clear");
                 print_bg(&bg);
 
+                if (!running) {
+                        printf("Goodbye Little Snake~...\n");
+                        break;
+                }
+
                 if (!move_ok) {
                         printf("Ooops! You failed level %d... T~T\n",
                                bg.level);
@@ -102,9 +124,10 @@ int main(void)
                 }
 
                 if (snake->mode == penetrable_mode) {
-                        printf("p_mode\n");
+                        printf("snake_mode: penetrable_mode\n");
                 } else {
-                        printf("o_mode: %u\n", snake->bullets);
+                        printf("snake_mode: offensive_mode\n");
+                        printf("bullets: %u\n", snake->bullets);
                 }
 
                 if (bg.food_num == 0) {
