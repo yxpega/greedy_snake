@@ -1,10 +1,59 @@
 /* Implement snake functions */
 #include <assert.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 #include "snake.h"
 
 static const Point direct[] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+void snake_load_bullets(Background *bg, Snake_part *snake)
+{
+        assert(bg != NULL);
+        assert(snake != NULL);
+
+        snake->bullets = bg->wall_num / 2;
+}
+
+void snake_shoot_bullets(Background *bg, Snake_part *snake)
+{
+        if (snake->mode != offensive_mode || snake->bullets == 0u) {
+                return;
+        }
+
+        snake->bullets--;
+
+        Point cur = snake->location;
+        Point mov = direct[snake->prev_direc];
+        cur.x += mov.x;
+        cur.y += mov.y;
+
+        while (is_point_inbg(bg, cur)) {
+                system("clear");
+                enum bg_type prev_bg = bg->bg_path[cur.x][cur.y];
+                bg->bg_path[cur.x][cur.y] = bg_snake_bullet;
+                print_bg(bg);
+                bg->bg_path[cur.x][cur.y] = prev_bg;
+
+                if (bg->bg_path[cur.x][cur.y] == bg_wall) {
+                        bg->bg_path[cur.x][cur.y] = bg_empty;
+                        system("clear");
+                        print_bg(bg);
+                        break;
+                }
+                cur.x += mov.x;
+                cur.y += mov.y;
+
+                /* To slow down the bullets speed to make eye detectable */
+                usleep(20000);
+        }
+}
+
+void snake_exchange_mode(Snake_part *snake)
+{
+        assert(snake != NULL);
+        snake->mode = 1u - snake->mode;
+}
 
 Snake_part *snake_init(Background *bg)
 {
@@ -78,6 +127,18 @@ static Point __snake_pop_tail(Snake_part *snake_head)
         return tail_loc;
 }
 
+bool __snake_is_hitself(Background *bg, Snake_part *snake_head)
+{
+        assert(bg != NULL);
+        assert(snake_head != NULL);
+
+        Point loc = snake_head->location;
+        Point tail = snake_head->prev->location;
+        return (tail.x != loc.x || tail.y != loc.y) &&
+               (bg->bg_path[loc.x][loc.y] == bg_snake_body ||
+               bg->bg_path[loc.x][loc.y] == bg_snake_head);
+}
+
 bool snake_move_onbg_ok(Background *bg,
                         Snake_part *snake_head,
                         unsigned int direc_type)
@@ -92,9 +153,14 @@ bool snake_move_onbg_ok(Background *bg,
         } else {
                 snake_head->location.x += direct[direc_type].x;
                 snake_head->location.y += direct[direc_type].y;
+                snake_head->prev_direc = direc_type;
         }
 
         if (!is_point_valid(bg, snake_head->location)) {
+                return false;
+        }
+        if (snake_head->mode == offensive_mode &&
+            __snake_is_hitself(bg, snake_head)) {
                 return false;
         }
 

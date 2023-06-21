@@ -8,11 +8,12 @@
 #define BG_MAX_LEVEL BG_BOUNDER
 
 enum bg_type {
-        bg_empty = 0,   // use " " to denote empty
-        bg_wall,        // use "#" to denote wall
-        bg_food,        // use "+" to denote food
-        bg_snake_head,  // use "o" to denote snake head
-        bg_snake_body,  // use "*" to denote snake body
+        bg_empty = 0,           // use " " to denote empty
+        bg_wall,                // use "#" to denote wall
+        bg_food,                // use "+" to denote food
+        bg_snake_head,          // use "o" to denote snake head
+        bg_snake_body,          // use "*" to denote snake body
+        bg_snake_bullet,        // use "-" to denote snake bullet
 };
 
 typedef struct point_s {
@@ -30,6 +31,7 @@ typedef struct bg_s {
 void generate_bg(Background *bg);
 void levelup_bg(Background *bg);
 void print_bg(Background *bg);
+bool is_point_inbg(Background *bg, Point p);
 bool is_point_valid(Background *bg, Point p);
 bool is_point_food(Background *bg, Point p);
 

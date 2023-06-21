@@ -4,7 +4,7 @@
 #include <string.h>
 #include "background.h"
 
-static void set_bg(Background *bg, unsigned int num, enum bg_type type)
+static void __set_bg(Background *bg, unsigned int num, enum bg_type type)
 {
         for (unsigned int i = 0u; i < num; i++) {
                 Point tmp_p;
@@ -33,8 +33,8 @@ void generate_bg(Background *bg)
         bg->wall_num = (bg->level - 1) * 2;
         bg->food_num = bg->level;
 
-        set_bg(bg, bg->wall_num, bg_wall);
-        set_bg(bg, bg->food_num, bg_food);
+        __set_bg(bg, bg->wall_num, bg_wall);
+        __set_bg(bg, bg->food_num, bg_food);
 }
 
 void print_bg(Background *bg)
@@ -60,6 +60,9 @@ void print_bg(Background *bg)
                                 case bg_snake_body:
                                         printf("*");
                                         break;
+                                case bg_snake_bullet:
+                                        printf("-");
+                                        break;
                                 default:
                                         printf(" ");
                                         break;
@@ -75,10 +78,15 @@ void print_bg(Background *bg)
         printf("level: %u\n", bg->level);
 }
 
-bool is_point_valid(Background *bg, Point p)
+bool is_point_inbg(Background *bg, Point p)
 {
         return p.x >= 0 && p.x < BG_BOUNDER &&
-               p.y >= 0 && p.y < BG_BOUNDER &&
+               p.y >= 0 && p.y < BG_BOUNDER;
+}
+
+bool is_point_valid(Background *bg, Point p)
+{
+        return is_point_inbg(bg, p) &&
                bg->bg_path[p.x][p.y] != bg_wall;
 }
 

@@ -12,6 +12,8 @@
 #define INPUTKEY_LEFT 358
 #define INPUTKEY_RIGHT 357
 #define INPUTKEY_ESC 27
+#define INPUTKEY_SPACE 32
+#define INPUTKEY_M 109
 
 int getch(void)
 {
@@ -80,6 +82,12 @@ int main(void)
                                 running = false;
                                 printf("Goodbye Little Snake~...\n");
                                 break;
+                        case INPUTKEY_SPACE:
+                                snake_shoot_bullets(&bg, snake);
+                                break;
+                        case INPUTKEY_M:
+                                snake_exchange_mode(snake);
+                                break;
                         default:
                                 break;
                 }
@@ -92,6 +100,12 @@ int main(void)
 
                 system("clear");
                 print_bg(&bg);
+
+                if (snake->mode == penetrable_mode) {
+                        printf("p_mode\n");
+                } else {
+                        printf("o_mode: %u\n", snake->bullets);
+                }
 
                 if (bg.food_num == 0) {
                         printf("Wow! Snake is full now... ^_<\n");
@@ -108,6 +122,7 @@ int main(void)
                                 levelup_bg(&bg);
                                 snake_putto_background(&bg, snake);
                                 generate_bg(&bg);
+                                snake_load_bullets(&bg, snake);
                                 getch();
                                 system("clear");
                                 print_bg(&bg);
