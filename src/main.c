@@ -84,12 +84,20 @@ int main(void)
                         default:
                                 break;
                 }
+
                 if (!move_ok) {
                         printf("Ooops! You failed... T~T\n");
                         break;
                 }
+
                 system("clear");
                 print_bg(&bg);
+
+                if (bg.food_num == 0) {
+                        printf("Wow! Snake is full now... ^_<\n");
+                        printf("You win!\n");
+                        break;
+                }
         }
 
         snake_destroy(snake);

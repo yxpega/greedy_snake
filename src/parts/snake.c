@@ -107,6 +107,8 @@ bool snake_move_onbg_ok(Background *bg,
         if (!is_point_food(bg, snake_head->location)) {
                 mov_loc = __snake_pop_tail(snake_head);
                 bg->bg_path[mov_loc.x][mov_loc.y] = bg_empty;
+        } else {
+                bg->food_num--;
         }
 
         /* put current snake to background */
