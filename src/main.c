@@ -45,7 +45,6 @@ int getch(void)
         for (int i = 0; i < strlen(buf); i++) {
                 key_val = (key_val << 1) + (int)buf[i];
         }
-        printf("%d\n", key_val);
         return key_val;
 }
 
@@ -58,29 +57,39 @@ int main(void)
         Snake_part *snake = snake_init(&bg);
         snake_putto_background(&bg, snake);
 
-        int input_key;
-        while (1) {
+        int input_key = 0;
+        bool move_ok = true;
+        bool running = true;
+        system("clear");
+        print_bg(&bg);
+        while (running) {
                 input_key = getch();
-                printf("...\n");
                 switch ((int)input_key) {
                         case INPUTKEY_UP:
-                                printf("UP\n");
+                                move_ok = snake_move_onbg_ok(&bg, snake, SNAKE_MOVE_UP);
                                 break;
                         case INPUTKEY_DOWN:
-                                printf("DOWN\n");
+                                move_ok = snake_move_onbg_ok(&bg, snake, SNAKE_MOVE_DOWN);
                                 break;
                         case INPUTKEY_LEFT:
-                                printf("LEFT\n");
+                                move_ok = snake_move_onbg_ok(&bg, snake, SNAKE_MOVE_LEFT);
                                 break;
                         case INPUTKEY_RIGHT:
-                                printf("RIGHT\n");
+                                move_ok = snake_move_onbg_ok(&bg, snake, SNAKE_MOVE_RIGHT);
                                 break;
                         case INPUTKEY_ESC:
-                                printf("ESC\n");
+                                running = false;
+                                printf("Goodbye Little Snake~...\n");
                                 break;
                         default:
                                 break;
                 }
+                if (!move_ok) {
+                        printf("Ooops! You failed... T~T\n");
+                        break;
+                }
+                system("clear");
+                print_bg(&bg);
         }
 
         snake_destroy(snake);
