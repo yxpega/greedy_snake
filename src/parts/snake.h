@@ -4,10 +4,11 @@
 
 #include "background.h"
 
-#define SNAKE_MOVE_UP -1
-#define SNAKE_MOVE_DOWN 1
-#define SNAKE_MOVE_LEFT -1
-#define SNAKE_MOVE_RIGHT 1
+#define SNAKE_MOVE_UP 0u
+#define SNAKE_MOVE_DOWN 1u
+#define SNAKE_MOVE_LEFT 2u
+#define SNAKE_MOVE_RIGHT 3u
+#define SNAKE_MOVE_INVAL 4u
 
 typedef struct part_s {
         Point location; // record the location of the snake part
@@ -16,7 +17,8 @@ typedef struct part_s {
 } Snake_part;
 
 Snake_part *snake_init(Background *bg);
-bool snake_move(Snake_part *snake_head, Background *bg, int direc);
+void snake_putto_background(Background *bg, Snake_part *snake);
+bool snake_move_onbg_ok(Background *bg, Snake_part *snake_head, unsigned int direc_type);
 void snake_destroy(Snake_part *snake_head);
 
 #endif

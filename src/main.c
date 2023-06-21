@@ -20,6 +20,12 @@ void print_bg(enum bg_type (*background)[BG_BOUNDER])
                                 case bg_food:
                                         printf("+");
                                         break;
+                                case bg_snake_head:
+                                        printf("o");
+                                        break;
+                                case bg_snake_body:
+                                        printf("*");
+                                        break;
                                 default:
                                         printf(" ");
                                         break;
@@ -38,8 +44,12 @@ int main(void)
 {
         Background bg;
         memset(&bg, 0, sizeof(Background));
-
         generate_bg(&bg);
+
+        Snake_part *snake = snake_init(&bg);
+        snake_putto_background(&bg, snake);
+
         print_bg(bg.bg_path);
+        snake_destroy(snake);
         return 0;
 }

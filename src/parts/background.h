@@ -10,6 +10,8 @@ enum bg_type {
         bg_empty = 0,   // use " " to denote empty
         bg_wall,        // use "#" to denote wall
         bg_food,        // use "+" to denote food
+        bg_snake_head,  // use "o" to denote snake head
+        bg_snake_body,  // use "*" to denote snake body
 };
 
 typedef struct point_s {

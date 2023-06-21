@@ -4,6 +4,8 @@
 #include <string.h>
 #include "snake.h"
 
+static const Point direct[] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
 Snake_part *snake_init(Background *bg)
 {
         Point init_loc;
@@ -23,17 +25,22 @@ Snake_part *snake_init(Background *bg)
         return snake_head;
 }
 
-static void __snake_add_tail(Snake_part *snake_head, Point location)
+void snake_putto_background(Background *bg, Snake_part *snake)
 {
-        assert(snake_head != NULL);
-        Snake_part *new_part = malloc(sizeof(Snake_part));
-        assert(new_part != NULL);
+        assert(bg != NULL);
+        assert(snake != NULL);
 
-        new_part->location = location;
-        new_part->prev = snake_head->prev;
-        new_part->next = snake_head;
-        snake_head->prev = new_part;
-        new_part->prev->next = new_part;
+        Point loc;
+        Snake_part *cur_part = snake;
+        do {
+                loc = cur_part->location;
+                bg->bg_path[loc.x][loc.y] = bg_snake_body;
+                cur_part = cur_part->next;
+        } while (cur_part != snake);
+
+        /* draw head at last */
+        loc = snake->location;
+        bg->bg_path[loc.x][loc.y] = bg_snake_head;
 }
 
 static void __snake_add_tohead(Snake_part *snake_head, Point location)
@@ -73,25 +80,37 @@ static Point __snake_pop_tail(Snake_part *snake_head)
         return tail_loc;
 }
 
-bool snake_move(Snake_part *snake_head, Background *bg, int direc)
+bool snake_move_onbg_ok(Background *bg,
+                        Snake_part *snake_head,
+                        unsigned int direc_type)
 {
         assert(snake_head != NULL);
+        Point mov_loc;
         Point prev_head_loc = snake_head->location;
 
-        if (direc == SNAKE_MOVE_UP || direc == SNAKE_MOVE_DOWN) {
-                snake_head->location.y += direc;
+        if (direc_type >= SNAKE_MOVE_INVAL) {
+                /* other direc will just pass this movement */
+                return true;
         } else {
-                snake_head->location.x += direc;
+                snake_head->location.x += direct[direc_type].x;
+                snake_head->location.y += direct[direc_type].y;
         }
 
         if (!is_point_valid(bg, snake_head->location)) {
                 return false;
         }
-        if (!is_point_food(bg, snake_head->location)) {
-                __snake_pop_tail(snake_head);
-        }
+
+        /* add body to prev head location */
         __snake_add_tohead(snake_head, prev_head_loc);
 
+        /* if not food point, remove tail */
+        if (!is_point_food(bg, snake_head->location)) {
+                mov_loc = __snake_pop_tail(snake_head);
+                bg->bg_path[mov_loc.x][mov_loc.y] = bg_empty;
+        }
+
+        /* put current snake to background */
+        snake_putto_background(bg, snake_head);
         return true;
 }
 
