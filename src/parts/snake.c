@@ -156,11 +156,10 @@ bool snake_move_onbg_ok(Background *bg,
                 snake_head->prev_direc = direc_type;
         }
 
-        if (!is_point_valid(bg, snake_head->location)) {
-                return false;
-        }
-        if (snake_head->mode == offensive_mode &&
-            __snake_is_hitself(bg, snake_head)) {
+        if (!is_point_valid(bg, snake_head->location) ||
+            (snake_head->mode == offensive_mode &&
+             __snake_is_hitself(bg, snake_head))) {
+                bg->bg_path[prev_head_loc.x][prev_head_loc.y] = bg_snake_g;
                 return false;
         }
 

@@ -14,6 +14,7 @@ enum bg_type {
         bg_snake_head,          // use "o" to denote snake head
         bg_snake_body,          // use "*" to denote snake body
         bg_snake_bullet,        // use "-" to denote snake bullet
+        bg_snake_g,             // use "G" to denote snake dead
 };
 
 typedef struct point_s {

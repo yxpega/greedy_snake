@@ -63,6 +63,9 @@ void print_bg(Background *bg)
                                 case bg_snake_bullet:
                                         printf("-");
                                         break;
+                                case bg_snake_g:
+                                        printf("G");
+                                        break;
                                 default:
                                         printf(" ");
                                         break;

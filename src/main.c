@@ -92,14 +92,14 @@ int main(void)
                                 break;
                 }
 
+                system("clear");
+                print_bg(&bg);
+
                 if (!move_ok) {
                         printf("Ooops! You failed level %d... T~T\n",
                                bg.level);
                         break;
                 }
-
-                system("clear");
-                print_bg(&bg);
 
                 if (snake->mode == penetrable_mode) {
                         printf("p_mode\n");
