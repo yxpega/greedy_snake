@@ -26,6 +26,7 @@ typedef struct bg_s {
 } Background;
 
 void generate_bg(Background *bg);
+void print_bg(Background *bg);
 bool is_point_valid(Background *bg, Point p);
 bool is_point_food(Background *bg, Point p);
 

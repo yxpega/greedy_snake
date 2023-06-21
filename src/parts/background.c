@@ -1,5 +1,6 @@
 /* Implement greedy snake backgroud */
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "background.h"
 
@@ -10,7 +11,7 @@ static void set_bg(Background *bg, int num, enum bg_type type)
                 do {
                         tmp_p.x = rand() % BG_BOUNDER;
                         tmp_p.y = rand() % BG_BOUNDER;
-                } while (bg->bg_path[tmp_p.x][tmp_p.y] == type);
+                } while (bg->bg_path[tmp_p.x][tmp_p.y] != bg_empty);
                 bg->bg_path[tmp_p.x][tmp_p.y] = type;
         }
 }
@@ -22,6 +23,43 @@ void generate_bg(Background *bg)
 
         set_bg(bg, bg->wall_num, bg_wall);
         set_bg(bg, bg->food_num, bg_food);
+}
+
+void print_bg(Background *bg)
+{
+        for (int i = 0; i < BG_BOUNDER + 2; i++) {
+                printf("#");
+        }
+        printf("\n");
+
+        for (int r = 0; r < BG_BOUNDER; r++) {
+                printf("#");
+                for (int c = 0; c < BG_BOUNDER; c++) {
+                        switch (bg->bg_path[r][c]) {
+                                case bg_wall:
+                                        printf("#");
+                                        break;
+                                case bg_food:
+                                        printf("+");
+                                        break;
+                                case bg_snake_head:
+                                        printf("o");
+                                        break;
+                                case bg_snake_body:
+                                        printf("*");
+                                        break;
+                                default:
+                                        printf(" ");
+                                        break;
+                        }
+                }
+                printf("#\n");
+        }
+
+        for (int i = 0; i < BG_BOUNDER + 2; i++) {
+                printf("#");
+        }
+        printf("\n");
 }
 
 bool is_point_valid(Background *bg, Point p)
